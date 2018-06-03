@@ -23,7 +23,7 @@ public class ShiroConfiguration {
     }
 
 	@Bean(name = "shiroFilter")
-	public ShiroFilterFactoryBean shiroFilterFactoryBean() {
+	public ShiroFilterFactoryBean shiroFilterFactoryBean2() {
 
 		ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
 
