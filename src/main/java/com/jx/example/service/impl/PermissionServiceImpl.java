@@ -3,6 +3,7 @@ package com.jx.example.service.impl;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.jx.example.base.BaseServiceImpl;
 import com.jx.example.dao.PermissionMapper;
@@ -16,6 +17,7 @@ import com.jx.example.service.IPermissionService;
  * @date 2018年6月4日 上午9:51:46
  *
  */
+@Service
 public class PermissionServiceImpl extends BaseServiceImpl<Permission> implements IPermissionService {
 
 	@Autowired

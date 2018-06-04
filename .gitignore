@@ -9,3 +9,6 @@ logs/druid-sql.log
 logs/error.log
 logs/info.log
 logs/warn.log
+logs/2018-06/debug-2018-06-02-1.log.gz
+logs/2018-06/info-2018-06-02-1.log.gz
+logs/2018-06/warn-2018-06-02-1.log.gz
