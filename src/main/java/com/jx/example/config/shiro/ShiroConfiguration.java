@@ -1,5 +1,6 @@
 package com.jx.example.config.shiro;
 
+import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.springframework.context.annotation.Bean;
@@ -22,44 +23,22 @@ public class ShiroConfiguration {
         return securityManager;
 
     }
+	
+	@Bean
+    public ShiroRealm shiroRealm() {
+		ShiroRealm shiroRealm = new ShiroRealm();
+        //告诉realm,使用credentialsMatcher加密算法类来验证密文
+		shiroRealm.setCredentialsMatcher(hashedCredentialsMatcher());
+		shiroRealm.setCachingEnabled(false);
+        return shiroRealm;
+    }
+	
+	@Bean  
+    public HashedCredentialsMatcher hashedCredentialsMatcher() {  
+        HashedCredentialsMatcher hashedCredentialsMatcher = new HashedCredentialsMatcher();  
+        hashedCredentialsMatcher.setHashAlgorithmName("md5");//散列算法:这里使用MD5算法;  
+        hashedCredentialsMatcher.setHashIterations(2);//散列的次数，比如散列两次，相当于 md5(md5(""));  
+        return hashedCredentialsMatcher;  
+    } 
 
-	@Bean(name = "shiroFilter")
-	public ShiroFilterFactoryBean shiroFilterFactoryBean2() {
-
-		ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
-
-		shiroFilterFactoryBean.setSecurityManager(securityManager());
-
-		Map<String, Filter> filters = new LinkedHashMap<String, Filter>();
-
-		LogoutFilter logoutFilter = new LogoutFilter();
-
-		logoutFilter.setRedirectUrl("/login");
-
-		// filters.put("logout",null);
-
-		shiroFilterFactoryBean.setFilters(filters);
-
-		Map<String, String> filterChainDefinitionManager = new LinkedHashMap<String, String>();
-
-		filterChainDefinitionManager.put("/logout", "logout");
-
-		filterChainDefinitionManager.put("/user/**", "authc,roles[ROLE_USER]");
-
-		filterChainDefinitionManager.put("/events/**", "authc,roles[ROLE_ADMIN]");
-
-		// filterChainDefinitionManager.put("/user/edit/**",
-		// "authc,perms[user:edit]");// 这里为了测试，固定写死的值，也可以从数据库或其他配置中读取
-
-		filterChainDefinitionManager.put("/**", "anon");
-
-		shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionManager);
-
-		shiroFilterFactoryBean.setSuccessUrl("/");
-
-		shiroFilterFactoryBean.setUnauthorizedUrl("/403");
-
-		return shiroFilterFactoryBean;
-
-	}
 }

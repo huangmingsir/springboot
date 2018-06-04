@@ -371,4 +371,10 @@
      from user
     <include refid="sql_where" />
   </select>
+  <select id="findUserByPhoneOrEmail" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from user
+    where phone_number = #{username,jdbcType=INTEGER} or email = #{username,jdbcType=INTEGER}
+  </select>
 </mapper>

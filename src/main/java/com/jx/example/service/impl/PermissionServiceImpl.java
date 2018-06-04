@@ -1,5 +1,7 @@
 package com.jx.example.service.impl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jx.example.base.BaseServiceImpl;
@@ -15,7 +17,7 @@ import com.jx.example.service.IPermissionService;
  *
  */
 public class PermissionServiceImpl extends BaseServiceImpl<Permission> implements IPermissionService {
-	
+
 	@Autowired
 	private PermissionMapper permissionMapper;
 
@@ -23,4 +25,8 @@ public class PermissionServiceImpl extends BaseServiceImpl<Permission> implement
 		super.setBaseMapper(permissionMapper);
 	}
 
+	@Override
+	public List<Permission> findPermissionByRoleId(int roleId) {
+		return permissionMapper.findPermissionByRoleId(roleId);
+	}
 }

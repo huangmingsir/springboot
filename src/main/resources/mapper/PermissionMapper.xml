@@ -341,4 +341,10 @@
      from permission
     <include refid="sql_where" />
   </select>
+  <select id="findPermissionByRoleId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+     select 
+    <include refid="Base_Column_List" />
+     from permission
+    LEFT JOIN role_permission ON permission.id=role_permission.permission_id WHERE role_permission.role_id=#{id,jdbcType=INTEGER}
+  </select>
 </mapper>

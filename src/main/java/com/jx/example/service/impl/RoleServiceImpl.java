@@ -1,5 +1,7 @@
 package com.jx.example.service.impl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,5 +26,10 @@ public class RoleServiceImpl extends BaseServiceImpl<Role> implements IRoleServi
 	public void setRoleMapper() {
         super.setBaseMapper(roleMapper);
     }
+
+	@Override
+	public List<Role> findRoleByUserId(int userId) {
+		return roleMapper.findRoleByUserId(userId);
+	}
 
 }

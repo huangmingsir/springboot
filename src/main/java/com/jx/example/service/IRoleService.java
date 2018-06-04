@@ -1,5 +1,7 @@
 package com.jx.example.service;
 
+import java.util.List;
+
 import com.jx.example.base.IBaseService;
 import com.jx.example.entity.Role;
 
@@ -11,4 +13,5 @@ import com.jx.example.entity.Role;
  *
  */
 public interface IRoleService extends IBaseService<Role> {
+	public List<Role> findRoleByUserId(int userId);
 }

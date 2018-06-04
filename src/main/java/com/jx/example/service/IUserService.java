@@ -11,4 +11,5 @@ import com.jx.example.entity.User;
  *
  */
 public interface IUserService extends IBaseService<User>{
+	public User findUserByPhoneOrEmail(String username);
 }

@@ -1,6 +1,31 @@
 package com.jx.example.config.shiro;
 
+import java.awt.Menu;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.AuthenticationException;
+import org.apache.shiro.authc.AuthenticationInfo;
+import org.apache.shiro.authc.AuthenticationToken;
+import org.apache.shiro.authc.IncorrectCredentialsException;
+import org.apache.shiro.authc.LockedAccountException;
+import org.apache.shiro.authc.SimpleAuthenticationInfo;
+import org.apache.shiro.authc.UnknownAccountException;
+import org.apache.shiro.authz.AuthorizationInfo;
+import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
+import org.apache.shiro.subject.PrincipalCollection;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.jx.example.entity.Permission;
+import com.jx.example.entity.Role;
+import com.jx.example.entity.User;
+import com.jx.example.enumm.DeleteFlagEnum;
+import com.jx.example.service.IPermissionService;
+import com.jx.example.service.IRoleService;
+import com.jx.example.service.IUserService;
 
 /**
  * 
@@ -10,32 +35,35 @@ import org.apache.shiro.realm.AuthorizingRealm;
  *
  */
 public class ShiroRealm extends AuthorizingRealm {
+	
 	@Autowired
-	private UserService userService;
+	private IUserService userService;
+	
 	@Autowired
-	private RoleService roleService;
+	private IRoleService roleService;
+	
 	@Autowired
-	private MenuService menuService;
+	private IPermissionService permissionService;
 
 	@Override
 	protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principal) {
+		String username = (String) principal.getPrimaryPrincipal();
 		User user = (User) SecurityUtils.getSubject().getPrincipal();
-		String userName = user.getUsername();
 
 		SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
 
-		List<Role> roleList = this.roleService.findUserRole(userName);
+		List<Role> roleList = this.roleService.findRoleByUserId(user.getId());
 		Set<String> roleSet = new HashSet<>();
+		Set<String> permissionSet = new HashSet<>();
 		for (Role r : roleList) {
 			roleSet.add(r.getRoleName());
+			//添加权限
+			List<Permission> permissionList = this.permissionService.findPermissionByRoleId(r.getId());
+			for (Permission p : permissionList) {
+				permissionSet.add(p.getParentPermissionName());
+			}
 		}
 		simpleAuthorizationInfo.setRoles(roleSet);
-
-		List<Menu> permissionList = this.menuService.findUserPermissions(userName);
-		Set<String> permissionSet = new HashSet<>();
-		for (Menu m : permissionList) {
-			permissionSet.add(m.getPerms());
-		}
 		simpleAuthorizationInfo.setStringPermissions(permissionSet);
 		return simpleAuthorizationInfo;
 	}
@@ -45,15 +73,14 @@ public class ShiroRealm extends AuthorizingRealm {
 		String userName = (String) token.getPrincipal();
 		String password = new String((char[]) token.getCredentials());
 
-		User user = this.userService.findByName(userName);
-
+		User user = this.userService.findUserByPhoneOrEmail(userName);
 		if (user == null) {
 			throw new UnknownAccountException("用户名或密码错误！");
 		}
 		if (!password.equals(user.getPassword())) {
 			throw new IncorrectCredentialsException("用户名或密码错误！");
 		}
-		if ("0".equals(user.getStatus())) {
+		if (DeleteFlagEnum.N.toString().equals(user.getDeleteFlag())) {
 			throw new LockedAccountException("账号已被锁定,请联系管理员！");
 		}
 		return new SimpleAuthenticationInfo(user, password, getName());

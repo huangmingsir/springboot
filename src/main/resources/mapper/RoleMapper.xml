@@ -283,4 +283,12 @@
      from role
     <include refid="sql_where" />
   </select>
+  <select id="findRoleByUserId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from role
+    LEFT JOIN user_role 
+    ON role.id=user_role.id 
+    WHERE user_role.user_id = #{id,jdbcType=INTEGER}
+  </select>
 </mapper>

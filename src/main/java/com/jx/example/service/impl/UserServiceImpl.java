@@ -25,4 +25,9 @@ public class UserServiceImpl extends BaseServiceImpl<User> implements IUserServi
         super.setBaseMapper(userMapper);
     }
 
+	@Override
+	public User findUserByPhoneOrEmail(String username) {
+		return userMapper.findUserByPhoneOrEmail(username);
+	}
+
 }

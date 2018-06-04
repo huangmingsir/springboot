@@ -1,5 +1,7 @@
 package com.jx.example.service;
 
+import java.util.List;
+
 import com.jx.example.base.IBaseService;
 import com.jx.example.entity.Permission;
 
@@ -11,4 +13,5 @@ import com.jx.example.entity.Permission;
  *
  */
 public interface IPermissionService extends IBaseService<Permission> {
+	public List<Permission> findPermissionByRoleId(int roleId);
 }

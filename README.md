@@ -22,3 +22,4 @@ https://github.com/alibaba/druid/wiki/Druid中使用log4j2进行日志输出
 			<version>1.4.0</version>
 		</dependency>
 ```
+创建ShiroRealm类并继承AuthorizingRealm，然后实现AuthorizationInfo权限管理，AuthenticationInfo登录管理
