@@ -1,6 +1,6 @@
 package com.jx.example.entity;
 
-import com.jx.example.common.BaseEntity;
+import com.jx.example.base.BaseEntity;
 
 public class UserRole extends BaseEntity {
     private Integer userId;

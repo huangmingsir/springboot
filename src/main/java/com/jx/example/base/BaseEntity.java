@@ -1,4 +1,4 @@
-package com.jx.example.common;
+package com.jx.example.base;
 
 import java.io.Serializable;
 import java.util.Date;

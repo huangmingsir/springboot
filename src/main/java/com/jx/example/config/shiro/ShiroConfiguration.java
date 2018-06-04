@@ -10,6 +10,7 @@ public class ShiroConfiguration {
 	@Bean
 	public ShiroFilterFactoryBean shiroFilterFactoryBean() {
 		ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
+		shiroFilterFactoryBean.setSecurityManager(securityManager());
 		
 		return shiroFilterFactoryBean;
 	}

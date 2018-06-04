@@ -1,9 +1,15 @@
-package com.jx.example.common;
+package com.jx.example.base;
 
 import java.util.List;
 
-public interface BaseMapper<T> {
-	
+/**
+ * 
+ * @Description: TODO(描述类)
+ * @author 黄明彪
+ * @date 2018年6月4日 上午10:22:40
+ *
+ */
+public interface IBaseService<T> {
 	public T selectByPrimaryKey(Integer id);
 
 	public int deleteByPrimaryKey(Integer id);
@@ -21,5 +27,4 @@ public interface BaseMapper<T> {
 	public List<T> getListByPage(T t);
 
 	public Long getCount(T t);
-
 }
