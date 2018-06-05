@@ -6,10 +6,10 @@ import java.util.Map;
 import javax.servlet.Filter;
 
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
+import org.apache.shiro.cache.ehcache.EhCacheManager;
 import org.apache.shiro.spring.LifecycleBeanPostProcessor;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
-import org.apache.shiro.web.filter.authc.LogoutFilter;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -19,13 +19,20 @@ import org.springframework.context.annotation.DependsOn;
 
 @Configuration
 public class ShiroConfiguration {
+	
+	@Bean
+    public EhCacheManager ehCacheManager(){
+       EhCacheManager cacheManager = new EhCacheManager();
+       cacheManager.setCacheManagerConfigFile("classpath:config/ehcache-shiro.xml");
+       return cacheManager;
+    }
 
 	@Bean(name = "securityManager")
 	public DefaultWebSecurityManager securityManager() {
 		DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
 		securityManager.setRealm(shiroRealm());
+		securityManager.setCacheManager(ehCacheManager());
 		return securityManager;
-
 	}
 
 	@Bean
@@ -33,17 +40,25 @@ public class ShiroConfiguration {
 	public ShiroRealm shiroRealm() {
 		ShiroRealm shiroRealm = new ShiroRealm();
 		// 告诉realm,使用credentialsMatcher加密算法类来验证密文
-		shiroRealm.setCredentialsMatcher(hashedCredentialsMatcher());
+		shiroRealm.setCredentialsMatcher(myCredentialsMatcher());
 		shiroRealm.setCachingEnabled(false);
 		return shiroRealm;
+	}
+	
+	@Bean
+	public MyCredentialsMatcher myCredentialsMatcher() {
+		//MyCredentialsMatcher myCredentialsMatcher = new MyCredentialsMatcher();
+		MyCredentialsMatcher myCredentialsMatcher = new MyCredentialsMatcher(ehCacheManager());
+		myCredentialsMatcher.setHashAlgorithm("SHA-512");
+		myCredentialsMatcher.setHashIterations(2);
+		return myCredentialsMatcher;
 	}
 
 	@Bean
 	public HashedCredentialsMatcher hashedCredentialsMatcher() {
 		HashedCredentialsMatcher hashedCredentialsMatcher = new HashedCredentialsMatcher();
 		hashedCredentialsMatcher.setHashAlgorithmName("md5");// 散列算法:这里使用MD5算法;
-		hashedCredentialsMatcher.setHashIterations(2);// 散列的次数，比如散列两次，相当于
-														// md5(md5(""));
+		hashedCredentialsMatcher.setHashIterations(2);// 散列的次数，比如散列两次，相当于md5(md5(""));
 		hashedCredentialsMatcher.setStoredCredentialsHexEncoded(true);
 		return hashedCredentialsMatcher;
 	}
