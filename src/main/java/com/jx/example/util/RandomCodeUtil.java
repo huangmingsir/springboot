@@ -1,7 +1,6 @@
 package com.jx.example.util;
 
 import org.apache.shiro.crypto.SecureRandomNumberGenerator;
-import org.apache.shiro.crypto.hash.Md5Hash;
 
 /**
  * 
@@ -19,7 +18,7 @@ public class RandomCodeUtil {
 	 * @param hashIterations
 	 * @return
 	 */
-	public String secureRandomNumberGenerator() {
+	public static String secureRandomNumberGenerator() {
 		SecureRandomNumberGenerator randomNumberGenerator = new SecureRandomNumberGenerator();
 //		randomNumberGenerator.setSeed("123".getBytes());//生成123的固定32位编码
 		return randomNumberGenerator.nextBytes().toHex();

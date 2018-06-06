@@ -10,6 +10,8 @@ import com.jx.example.entity.User;
  * @date 2018年6月4日 上午9:47:53
  *
  */
-public interface IUserService extends IBaseService<User>{
+public interface IUserService extends IBaseService<User> {
+	public boolean save(User user);
+
 	public User findUserByPhoneOrEmail(String username);
 }
