@@ -41,6 +41,7 @@ public class ShiroConfiguration {
 	@Bean
 	public SimpleCookie simpleCookie() {
 		SimpleCookie simpleCookie = new SimpleCookie();
+		//subject.getSession()获取到的将是此名字的SESSION
 		simpleCookie.setName("MYSESSIONID");//不能取名叫sid，否则会报 org.apache.shiro.session.UnknownSessionException: There is no session with id 
 		simpleCookie.setMaxAge(1800000);//设置Cookie的过期时间，秒为单位，默认-1表示关闭浏览器时过期Cookie；
 		//如果设置为true，则客户端不会暴露给客户端脚本代码，使用HttpOnly cookie有助于减少某些类型的跨站点脚本攻击；此特性需要实现了Servlet 2.5 MR6及以上版本的规范的Servlet容器支持；
@@ -48,14 +49,18 @@ public class ShiroConfiguration {
 		return simpleCookie;
 	}
 	
+	/**
+	 * 在Servlet容器中，默认使用JSESSIONID Cookie维护会话，且会话默认是跟容器绑定的；在某些情况下可能需要使用自己的会话机制，此时我们可以使用DefaultWebSessionManager来维护会话
+	 * @return
+	 */
 	@Bean
 	public DefaultWebSessionManager sessionManager() {
 		DefaultWebSessionManager defaultWebSessionManager = new DefaultWebSessionManager();
 		defaultWebSessionManager.setGlobalSessionTimeout(1800000);//设置session全局过期时间30分钟
-		defaultWebSessionManager.setSessionIdCookie(simpleCookie());
+		defaultWebSessionManager.setSessionIdCookie(simpleCookie());//使用这个就将
 		defaultWebSessionManager.setSessionIdCookieEnabled(true);
 		defaultWebSessionManager.setDeleteInvalidSessions(true);// 删除过期的session 
-//		defaultWebSessionManager.setSessionDAO(new EnterpriseCacheSessionDAO());
+//		defaultWebSessionManager.setSessionDAO(new EnterpriseCacheSessionDAO());//可以自定义sessionDao实现session的增删改查或持久化
 //		defaultWebSessionManager.setSessionValidationSchedulerEnabled(true);
 //		defaultWebSessionManager.setSessionValidationScheduler(scheduler());
 		return defaultWebSessionManager;
