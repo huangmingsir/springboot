@@ -71,15 +71,15 @@ public class ShiroRealm extends AuthorizingRealm {
 	@Override
 	protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
 		String userName = (String) token.getPrincipal();// 登录的账号（不管是邮箱或者手机）
-		String password = new String((char[]) token.getCredentials());
+//		String password = new String((char[]) token.getCredentials());
 
 		User user = this.userService.findUserByPhoneOrEmail(userName);
 		if (user == null) {
 			throw new UnknownAccountException("用户名或密码错误");
 		}
-		if (!password.equals(user.getPassword())) {
-			throw new IncorrectCredentialsException("用户名或密码错误");
-		}
+//		if (!password.equals(user.getPassword())) {//密码已加密这里不适用
+//			throw new IncorrectCredentialsException("用户名或密码错误");
+//		}
 		if (DeleteFlagEnum.Y.toString().equals(user.getDeleteFlag())) {
 			throw new LockedAccountException("账号已被锁定,请联系管理员");
 		}

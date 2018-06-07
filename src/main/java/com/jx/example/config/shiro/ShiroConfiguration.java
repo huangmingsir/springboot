@@ -58,7 +58,7 @@ public class ShiroConfiguration {
 	public DefaultWebSessionManager sessionManager() {
 		DefaultWebSessionManager defaultWebSessionManager = new DefaultWebSessionManager();
 		defaultWebSessionManager.setGlobalSessionTimeout(1800000);//设置session全局过期时间30分钟
-		defaultWebSessionManager.setSessionIdCookie(simpleCookie());//使用这个就将
+		defaultWebSessionManager.setSessionIdCookie(simpleCookie());
 		defaultWebSessionManager.setSessionIdCookieEnabled(true);
 		defaultWebSessionManager.setDeleteInvalidSessions(true);// 删除过期的session 
 //		defaultWebSessionManager.setSessionDAO(new EnterpriseCacheSessionDAO());//可以自定义sessionDao实现session的增删改查或持久化

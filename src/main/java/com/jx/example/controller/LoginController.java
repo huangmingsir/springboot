@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,23 +46,26 @@ public class LoginController {
 	 */
 	@PostMapping("/login")
 	public ResponseEntity<String> login(HttpServletRequest request) {
-		// FormAuthenticationFilter会统一将登录（subject.login（））后的异常全部转换后放在这个request
-		// Attribute中
-		String exception = (String) request.getAttribute(FormAuthenticationFilter.DEFAULT_ERROR_KEY_ATTRIBUTE_NAME);
-		if (exception != null) {
-			if ("kaptchaValidateFailed".equals(exception)) {
-				logger.info(request.getAttribute("username") + ":登录验证码错误");
-				return new ResponseEntity<String>("验证码错误", HttpStatus.PRECONDITION_FAILED);
-			} else if ("org.apache.shiro.authc.IncorrectCredentialsException".equals(exception)) {
-				return new ResponseEntity<String>("用户名或密码错误", HttpStatus.UNAUTHORIZED);
-			} else if ("org.apache.shiro.authc.UnknownAccountException".equals(exception)) {
-				return new ResponseEntity<String>("用户名或密码错误", HttpStatus.UNAUTHORIZED);
-			} else if ("org.apache.shiro.authc.LockedAccountException".equals(exception)) {
-				return new ResponseEntity<String>("账号已被锁定", HttpStatus.LOCKED);
-			} else if ("org.apache.shiro.authc.ExcessiveAttemptsException".equals(exception)) {
-				return new ResponseEntity<String>("登录失败次数过多", HttpStatus.LOOP_DETECTED);
-			} else {
-				return new ResponseEntity<String>("登录失败", HttpStatus.BAD_REQUEST);
+		Subject subject = SecurityUtils.getSubject();
+		if (!subject.isAuthenticated()) {
+			// FormAuthenticationFilter会统一将登录（subject.login（））后的异常全部转换后放在这个request
+			// Attribute中
+			String exception = (String) request.getAttribute(FormAuthenticationFilter.DEFAULT_ERROR_KEY_ATTRIBUTE_NAME);
+			if (exception != null) {
+				if ("kaptchaValidateFailed".equals(exception)) {
+					logger.info(request.getAttribute("username") + ":登录验证码错误");
+					return new ResponseEntity<String>("验证码错误", HttpStatus.PRECONDITION_FAILED);
+				} else if ("org.apache.shiro.authc.IncorrectCredentialsException".equals(exception)) {
+					return new ResponseEntity<String>("用户名或密码错误", HttpStatus.UNAUTHORIZED);
+				} else if ("org.apache.shiro.authc.UnknownAccountException".equals(exception)) {
+					return new ResponseEntity<String>("用户名或密码错误", HttpStatus.UNAUTHORIZED);
+				} else if ("org.apache.shiro.authc.LockedAccountException".equals(exception)) {
+					return new ResponseEntity<String>("账号已被锁定", HttpStatus.LOCKED);
+				} else if ("org.apache.shiro.authc.ExcessiveAttemptsException".equals(exception)) {
+					return new ResponseEntity<String>("登录失败次数过多", HttpStatus.LOOP_DETECTED);
+				} else {
+					return new ResponseEntity<String>("登录失败", HttpStatus.BAD_REQUEST);
+				}
 			}
 		}
 		return new ResponseEntity<String>("登录成功", HttpStatus.OK);
@@ -95,6 +99,11 @@ public class LoginController {
 	@PostMapping("/register")
 	public ResponseEntity<Boolean> registerUser(@RequestBody User user) {
 		return new ResponseEntity<Boolean>(userService.save(user), HttpStatus.OK);
+	}
+
+	@GetMapping("/test")
+	public ResponseEntity<String> test() {
+		return new ResponseEntity<String>("测试一下", HttpStatus.OK);
 	}
 
 }
