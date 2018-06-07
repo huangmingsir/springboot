@@ -1,5 +1,6 @@
 package com.jx.example.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.jx.example.base.BaseEntity;
 
 public class User extends BaseEntity {
@@ -7,8 +8,10 @@ public class User extends BaseEntity {
 
     private String email;
 
+    @JsonIgnore
     private String password;
 
+    @JsonIgnore
     private String salt;
 
     private String nickName;

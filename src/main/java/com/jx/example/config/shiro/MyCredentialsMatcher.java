@@ -13,8 +13,6 @@ import org.apache.shiro.cache.CacheManager;
 
 import com.jx.example.util.EncryptUtil;
 
-import net.sf.ehcache.Ehcache;
-
 /**
  * 
  * @Description: TODO(描述类)
@@ -47,7 +45,7 @@ public class MyCredentialsMatcher extends SimpleCredentialsMatcher {
 		}
 		if (retryCount.incrementAndGet() > 5) {
 			// if retry count > 5 throw
-			throw new ExcessiveAttemptsException();
+			throw new ExcessiveAttemptsException("账户登录错误过多，请稍后重试");
 		}
 		// token里有用户输入的用户名和密码；info里有realm里SimpleAuthenticationInfo传的用户和密码
 		UsernamePasswordToken autoken = (UsernamePasswordToken) token;

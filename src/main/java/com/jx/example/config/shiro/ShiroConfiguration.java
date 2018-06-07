@@ -22,6 +22,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 
 import com.jx.example.config.GlobalConfig;
+import com.jx.example.filter.CustomFormAuthenticationFilter;
 
 @Configuration
 public class ShiroConfiguration {
@@ -156,17 +157,21 @@ public class ShiroConfiguration {
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
         shiroFilterFactoryBean.setSecurityManager(securityManager());
         Map<String, Filter> filters = new LinkedHashMap<String, Filter>();
+        filters.put("authc", new CustomFormAuthenticationFilter());
 //        LogoutFilter logoutFilter = new LogoutFilter();
 //        logoutFilter.setRedirectUrl("/login");
 //        filters.put("logout",null);
         shiroFilterFactoryBean.setFilters(filters);
         Map<String, String> filterChainDefinitionManager = new LinkedHashMap<String, String>();
+        filterChainDefinitionManager.put("/loginUser", "anon");
         filterChainDefinitionManager.put("/logout", "logout");
         filterChainDefinitionManager.put("/user/**", "authc,roles[ROLE_USER]");
         filterChainDefinitionManager.put("/events/**", "authc,roles[ROLE_ADMIN]");
-//        filterChainDefinitionManager.put("/user/edit/**", "authc,perms[user:edit]");// 这里为了测试，固定写死的值，也可以从数据库或其他配置中读取
-        filterChainDefinitionManager.put("/**", "anon");
+        filterChainDefinitionManager.put("/getVerify", "anon");
+        filterChainDefinitionManager.put("/**", "authc");
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionManager);
+        // 如果不设置默认会自动寻找Web工程根目录下的"/login.jsp"页面，如果不存在就会发生第一次登录经过CustomFormAuthenticationFilter后，再次进入并丢失httpServletRequest导致登录失败
+        shiroFilterFactoryBean.setLoginUrl("/login");
         shiroFilterFactoryBean.setSuccessUrl("/");
         shiroFilterFactoryBean.setUnauthorizedUrl("/403");
         return shiroFilterFactoryBean;
