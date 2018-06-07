@@ -1,10 +1,10 @@
 server:
- port: 8080
- tomcat.uri:
-   encoding: UTF-8
+  port: 8080
+  tomcat.uri:
+    encoding: UTF-8
 spring:
- profiles:
-   active: dev
+  profiles:
+    active: dev
 mybatis: 
- type-aliases-package: com.jx.example.entity
- mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.jx.example.entity
+  mapper-locations: classpath:mapper/*.xml
