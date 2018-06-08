@@ -14,6 +14,7 @@ import org.apache.shiro.web.filter.authc.FormAuthenticationFilter;
 import org.apache.shiro.web.util.WebUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +28,7 @@ import com.alibaba.druid.support.json.JSONParser;
 import com.jx.example.entity.User;
 import com.jx.example.log.SystemLogAop;
 import com.jx.example.service.IUserService;
+import com.jx.example.vo.UserVO;
 
 @RestController
 public class LoginController {
@@ -45,7 +47,7 @@ public class LoginController {
 	 * @return
 	 */
 	@PostMapping("/login")
-	public ResponseEntity<String> login(HttpServletRequest request) {
+	public ResponseEntity<Object> login(HttpServletRequest request) {
 		Subject subject = SecurityUtils.getSubject();
 		if (!subject.isAuthenticated()) {
 			// FormAuthenticationFilter会统一将登录（subject.login（））后的异常全部转换后放在这个request
@@ -54,23 +56,27 @@ public class LoginController {
 			if (exception != null) {
 				if ("kaptchaValidateFailed".equals(exception)) {
 					logger.info(request.getAttribute("username") + ":登录验证码错误");
-					return new ResponseEntity<String>("验证码错误", HttpStatus.PRECONDITION_FAILED);
+					return new ResponseEntity<Object>("验证码错误", HttpStatus.PRECONDITION_FAILED);
 				} else if ("org.apache.shiro.authc.IncorrectCredentialsException".equals(exception)) {
-					return new ResponseEntity<String>("用户名或密码错误", HttpStatus.UNAUTHORIZED);
+					return new ResponseEntity<Object>("用户名或密码错误", HttpStatus.UNAUTHORIZED);
 				} else if ("org.apache.shiro.authc.UnknownAccountException".equals(exception)) {
-					return new ResponseEntity<String>("用户名或密码错误", HttpStatus.UNAUTHORIZED);
+					return new ResponseEntity<Object>("用户名或密码错误", HttpStatus.UNAUTHORIZED);
 				} else if ("org.apache.shiro.authc.LockedAccountException".equals(exception)) {
-					return new ResponseEntity<String>("账号已被锁定", HttpStatus.LOCKED);
+					return new ResponseEntity<Object>("账号已被锁定", HttpStatus.LOCKED);
 				} else if ("org.apache.shiro.authc.ExcessiveAttemptsException".equals(exception)) {
-					return new ResponseEntity<String>("登录失败次数过多", HttpStatus.LOOP_DETECTED);
+					return new ResponseEntity<Object>("登录失败次数过多", HttpStatus.LOOP_DETECTED);
 				} else {
-					return new ResponseEntity<String>("登录失败", HttpStatus.BAD_REQUEST);
+					return new ResponseEntity<Object>("登录失败", HttpStatus.BAD_REQUEST);
 				}
 			}
 		}
-		return new ResponseEntity<String>("登录成功", HttpStatus.OK);
+		User user = (User) subject.getPrincipal();
+		UserVO uservo =  new UserVO();
+		BeanUtils.copyProperties(user, uservo);
+		return new ResponseEntity<Object>(uservo, HttpStatus.OK);
 	}
 
+	//此登录方法不会走自定义CustomFormAuthenticationFilter，而是直接走密码验证通过后即登录成功
 	@RequestMapping("/loginUser")
 	public ResponseEntity<Object> loginUser(String username, String password, String randomcode) {
 		UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken(username, password);
@@ -84,7 +90,9 @@ public class LoginController {
 			return new ResponseEntity<Object>("登录失败次数过多", HttpStatus.LOOP_DETECTED);
 		}
 		User user = (User) subject.getPrincipal();
-		return new ResponseEntity<Object>(user, HttpStatus.OK);
+		UserVO uservo =  new UserVO();
+		BeanUtils.copyProperties(user, uservo);
+		return new ResponseEntity<Object>(uservo, HttpStatus.OK);
 
 	}
 

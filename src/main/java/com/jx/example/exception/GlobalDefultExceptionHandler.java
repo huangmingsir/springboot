@@ -4,6 +4,7 @@ import org.apache.shiro.authc.ExcessiveAttemptsException;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.LockedAccountException;
 import org.apache.shiro.authc.UnknownAccountException;
+import org.apache.shiro.session.UnknownSessionException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -42,13 +43,13 @@ public class GlobalDefultExceptionHandler {
     @ResponseBody  
     public ResponseEntity<String> validateFailedExceptionHandler(ExcessiveAttemptsException e) {  
 		return new ResponseEntity<String>("登录异常："+e.getMessage(), HttpStatus.LOOP_DETECTED);
-    }
-	
-	@ExceptionHandler(ValidateFailedException.class)  
-    @ResponseBody  
-    public ResponseEntity<String> validateFailedExceptionHandler(ValidateFailedException e) {  
-		return new ResponseEntity<String>("验证码异常："+e.getMessage(), HttpStatus.EXPECTATION_FAILED);
     }*/
+	
+//	@ExceptionHandler(UnknownSessionException.class)  
+//    @ResponseBody  
+//    public ResponseEntity<String> validateFailedExceptionHandler(UnknownSessionException e) {  
+//		return new ResponseEntity<String>("验证码异常："+e.getMessage(), HttpStatus.EXPECTATION_FAILED);
+//    }
 	
 	@ExceptionHandler(Exception.class)  
     @ResponseBody  

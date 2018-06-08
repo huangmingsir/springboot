@@ -20,3 +20,4 @@ logs/2018-06/debug-2018-06-06-1.log.gz
 logs/2018-06/error-2018-06-06-1.log.gz
 logs/2018-06/info-2018-06-06-1.log.gz
 logs/2018-06/warn-2018-06-06-1.log.gz
+*.gz
