@@ -144,7 +144,7 @@ public class ShiroConfiguration {
 	}
 
 	/**
-	 * AuthorizationAttributeSourceAdvisor，shiro里实现的Advisor类，
+	 * 开启shiro aop注解支持,AuthorizationAttributeSourceAdvisor，shiro里实现的Advisor类，
 	 * 内部使用AopAllianceAnnotationsAuthorizingMethodInterceptor来拦截用以下注解的方法。
 	 */
 	@Bean
